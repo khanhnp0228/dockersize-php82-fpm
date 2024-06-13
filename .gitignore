@@ -1,0 +1,13 @@
+datadir
+.env
+
+docker/mariadb/*
+docker/nginx/templates/*
+docker/xdebug/*
+docker/php/*
+
+var/log/nginx/*
+var/log/xdebug/*
+
+!.gitkeep
+!*.example

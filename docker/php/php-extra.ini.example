@@ -1,0 +1,14 @@
+;;;;;;;;;;;;;;;;;;;                                                            
+; Resource Limits ;                     
+;;;;;;;;;;;;;;;;;;;                              
+                                   
+; Maximum execution time of each script, in seconds
+; http://php.net/max-execution-time                                
+; Note: This directive is hardcoded to 0 for the CLI SAPI                   
+max_execution_time = -1
+
+; Ram limit
+memory_limit = -1
+
+; Error Report Method
+error_reporting=E_ALL

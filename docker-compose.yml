@@ -1,0 +1,81 @@
+services:
+  workspace:
+    build:
+      context: ./docker/alpine
+      args:
+        - XDEBUG_ENABLE=${XDEBUG_ENABLE:-0}
+        - ERROR_DISPLAY=${ERROR_DISPLAY:-0}
+    ports:
+      - "8000:8000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ${DATA_SRC:-../src}:/var/www
+      - ./docker/php/php-extra.ini:/usr/local/etc/php/conf.d/docker-php-ext-custom-php.ini:cached
+      - ${LOG_DIR:-./var/log}/xdebug:/tmp/xdebug:delegated
+    environment:
+      - PHP_MEMORY_LIMIT=-1
+      - COMPOSER_MEMORY_LIMIT=-1
+
+  node:
+    image: node:20.9.0-alpine
+    user: node
+    ports:
+      - "5173:5173"
+    volumes:
+      - ../src:/var/www
+      # - ./docker/node:/etc/sysctl.d/:cached
+      # - ./docker/node/entry:/entry
+    working_dir: /var/www
+    # command: /entry/initial.sh
+    tty: true
+    stdin_open: true
+
+  nginx:
+    image: nginx:alpine
+    depends_on:
+      - workspace
+    ports:
+      - "80:80"
+    volumes:
+      - ./docker/nginx/templates:/etc/nginx/templates:cached
+      - ${LOG_DIR:-./var/log}/nginx:/var/log/nginx:delegated
+      - ${DATA_SRC:-../src}:/var/www:cached
+
+  mariadb:
+    image: mariadb:10.6.1
+    command: --max_allowed_packet=32505856
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASS:-root}
+      MARIADB_USER: ${DB_USER:-default}
+      MARIADB_PASSWORD: ${DB_PASS:-secret}
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    volumes:
+      - ${DB_DATA:-../data}:/var/lib/mysql:delegated
+      - ./docker/mariadb:/docker-entrypoint-initdb.d:cached
+
+  adminer:
+    image: adminer:4.8.0
+    depends_on:
+      - mariadb
+    environment:
+      ADMINER_DEFAULT_SERVER: mariadb
+    ports:
+      - "8080:8080"
+
+  # redis:
+  #   image: redis:alpine
+  #   ports:
+  #     - 6379:6379
+
+  wpcli:
+    image: wordpress:cli-php8.2
+    depends_on:
+      - mariadb
+      - workspace
+    user: "1000"
+    entrypoint: wp
+    command: "--info"
+    volumes:
+      - ${DATA_SRC:-../src}:/var/www/html
