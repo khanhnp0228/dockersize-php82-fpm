@@ -75,7 +75,7 @@ services:
       - mariadb
       - workspace
     user: "1000"
-    entrypoint: wp
-    command: "--info"
+    # entrypoint: wp
+    # command: "--info"
     volumes:
       - ${DATA_SRC:-../src}:/var/www/html
