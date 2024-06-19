@@ -82,3 +82,4 @@ USER dev-user
 EXPOSE 9000
 
 ENV PATH="/home/dev-user/.composer/vendor/bin:${PATH}"
+RUN composer global require laravel/installer
