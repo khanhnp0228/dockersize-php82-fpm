@@ -1,4 +1,33 @@
-# php74-fpm Docker Env
+# php82-fpm Docker Env
+
+## PHP execute via Docker
+
+Create the `php` execute file at `/usr/local/bin`
+
+```sh
+sudo touch /usr/local/bin/php
+sudo chmod +x /usr/local/bin/php
+```
+
+Paste command bellow:
+
+```sh
+#!/bin/bash
+docker exec -i php82-fpm-workspace-1 php "$@"
+```
+
+Config the `.vscode/settings.json` file
+
+```json
+{
+    // VSCode core
+    "php.validate.executablePath": "/usr/local/bin/php",
+
+    // Extension: Laravel Extra Intellisense
+    "LaravelExtraIntellisense.phpCommand": "docker exec -w /var/www/<source name> php82-fpm-workspace-1 php -r \"{code}\"",
+    "LaravelExtraIntellisense.basePathForCode": "/var/www/<source name>"
+}
+```
 
 ## XDebug Support
 

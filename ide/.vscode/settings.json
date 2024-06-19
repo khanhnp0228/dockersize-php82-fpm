@@ -1,0 +1,8 @@
+{
+    // VSCode core
+    "php.validate.executablePath": "/usr/local/bin/php",
+
+    // Extension: Laravel Extra Intellisense
+    "LaravelExtraIntellisense.phpCommand": "docker exec -w /var/www/<source name> php82-fpm-workspace-1 php -r \"{code}\"",
+    "LaravelExtraIntellisense.basePathForCode": "/var/www/<source name>"
+}
