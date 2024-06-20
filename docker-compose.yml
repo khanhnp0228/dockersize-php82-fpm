@@ -79,3 +79,5 @@ services:
     # command: "--info"
     volumes:
       - ${DATA_SRC:-../src}:/var/www/html
+    environment:
+      WP_CLI_CACHE_DIR: /var/www/html/.wp-cli/cache/
